@@ -1,3 +1,0 @@
-# FinRepo
-TODO: add documentation
-

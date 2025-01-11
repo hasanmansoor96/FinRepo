@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "649516549635",
+    "project_id": "finrepo-3f037",
+    "storage_bucket": "finrepo-3f037.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649516549635:android:bf03cf05f38504df1ff036",
+        "android_client_info": {
+          "package_name": "com.example.bankaccount"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQoT08R_PsvjYcrClucl_4zgmzj1ZmxZs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
