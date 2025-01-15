@@ -73,7 +73,6 @@ fun BankAccountApp() {
             CountrySelectionScreen(
                 onCountrySelected = { selectedCountry ->
                     // Handle the selected country (e.g., save it or navigate back)
-                    // navController.popBackStack() // Navigate back after selection
                     navController.navigate("add_bank_form/$selectedCountry")
                 }
             )
