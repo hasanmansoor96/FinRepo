@@ -29,7 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.Close
@@ -38,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.navArgument
 import com.google.firebase.firestore.FieldValue
 
 
@@ -70,47 +73,85 @@ fun BankAccountApp() {
             CountrySelectionScreen(
                 onCountrySelected = { selectedCountry ->
                     // Handle the selected country (e.g., save it or navigate back)
-                    navController.popBackStack() // Navigate back after selection
+                    // navController.popBackStack() // Navigate back after selection
+                    navController.navigate("add_bank_form/$selectedCountry")
                 }
             )
+        }
+        composable(
+            route = "add_bank_form/{country}",
+            arguments = listOf(navArgument("country") { defaultValue = "Unknown" })
+        ) { backStackEntry ->
+            val country = backStackEntry.arguments?.getString("country") ?: "Unknown"
+            AddBankCardForm(viewModel = UserViewModel(), userId = "user456", country = country)
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
 @Composable
-fun AddBankCardForm(viewModel: UserViewModel, userId: String) {
+fun AddBankCardForm(viewModel: UserViewModel, userId: String, country: String) {
     var bankName by remember { mutableStateOf("") }
     var iban by remember { mutableStateOf("") }
 
-    val userViewModel: UserViewModel = viewModel
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center // Center the form horizontally and vertically
+    ) {
+        Card(
+            modifier = Modifier.padding(16.dp),
+            elevation = CardDefaults.cardElevation(8.dp) // Add elevation for shadow effect
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Add Bank Account",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
 
-    Button(onClick = {
-        userViewModel.addUser("user456", "asdf", "asf@gmail.com")
-    }) {
-        Text("Add User")
-    }
+                Text(text = "Country: $country", style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.height(16.dp))
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        TextField(
-            value = bankName,
-            onValueChange = { bankName = it },
-            label = { Text("Bank Name") }
-        )
-        TextField(
-            value = iban,
-            onValueChange = { iban = it },
-            label = { Text("IBAN") }
-        )
-        Button(onClick = {
-            val bankCard = mapOf(
-                "bankName" to bankName,
-                "iban" to iban,
-                "createdAt" to FieldValue.serverTimestamp()
-            )
-            viewModel.addBankCard(userId, bankCard)
-        }) {
-            Text("Add Bank Card")
+                // Bank Name Input Field
+                TextField(
+                    value = bankName,
+                    onValueChange = { bankName = it },
+                    label = { Text("Bank Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // IBAN Input Field
+                TextField(
+                    value = iban,
+                    onValueChange = { iban = it },
+                    label = { Text("IBAN") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Add Bank Card Button
+                Button(
+                    onClick = {
+                        val bankCard = mapOf(
+                            "bankName" to bankName,
+                            "iban" to iban,
+                            "country" to country,
+                            "createdAt" to FieldValue.serverTimestamp()
+                        )
+                        viewModel.addBankCard(userId, bankCard)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Add Bank Card")
+                }
+            }
         }
     }
 }
