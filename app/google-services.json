@@ -12,7 +12,20 @@
           "package_name": "com.example.bankaccount"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "649516549635-s9l4cv897s5n9enq59869p3n6veesp4p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bankaccount",
+            "certificate_hash": "b5c7a09e61adca272df1b4d0687b8e807aa050f7"
+          }
+        },
+        {
+          "client_id": "649516549635-ocg6abnmig2tn912j3cv5ebpml8nb0pv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBQoT08R_PsvjYcrClucl_4zgmzj1ZmxZs"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "649516549635-ocg6abnmig2tn912j3cv5ebpml8nb0pv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

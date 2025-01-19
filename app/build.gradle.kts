@@ -43,8 +43,7 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(libs.firebase.analytics)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material3) // Material3 library
@@ -57,6 +56,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.firestore.ktx)
+    implementation(platform(libs.firebase.bom)) // Firebase BOM
+    implementation(libs.firebase.auth.ktx)    // Firebase Authentication
+    implementation(libs.firebase.ui.auth)
+    implementation(libs.androidx.appcompat)     // FirebaseUI for Auth
+    implementation(libs.material) // Use the latest version
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
