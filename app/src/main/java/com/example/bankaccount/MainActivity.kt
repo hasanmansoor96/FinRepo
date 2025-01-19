@@ -53,23 +53,30 @@ class MainActivity : ComponentActivity() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
             // User not signed in; redirect to SignInActivity
-            startActivity(Intent(this, SignInActivity::class.java))
-            finish()
+            navigateToSignIn()
         } else {
             // User is signed in; proceed with MainActivity
-            enableEdgeToEdge() // Retain edge-to-edge
+            enableEdgeToEdge()
             setContent {
                 BankAccountTheme {
-                    BankAccountApp()
+                    BankAccountApp(onSignOut = { navigateToSignIn() })
                 }
             }
         }
+    }
+
+    private fun navigateToSignIn() {
+        val intent = Intent(this, SignInActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BankAccountApp() {
+fun BankAccountApp(onSignOut: () -> Unit) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -77,13 +84,13 @@ fun BankAccountApp() {
     ) {
         composable("home") {
             MainScreen(
-                onAddAccountClick = { navController.navigate("country_selection") } // Navigate directly to Country Selection
+                onAddAccountClick = { navController.navigate("country_selection") },
+                onSignOut = onSignOut
             )
         }
         composable("country_selection") {
             CountrySelectionScreen(
                 onCountrySelected = { selectedCountry ->
-                    // Handle the selected country (e.g., save it or navigate back)
                     navController.navigate("add_bank_form/$selectedCountry")
                 }
             )
@@ -168,16 +175,34 @@ fun AddBankCardForm(viewModel: UserViewModel, userId: String, country: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(modifier: Modifier = Modifier, onAddAccountClick: () -> Unit = {}) {
+fun MainScreen(modifier: Modifier = Modifier, onAddAccountClick: () -> Unit = {}, onSignOut: () -> Unit = {}) {
+    // State to manage the visibility of the dropdown menu
+    var menuExpanded by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("FinRepo") },
                 navigationIcon = {
-                    IconButton(onClick = { /* TODO: Open drawer or show menu */ }) {
+                    IconButton(onClick = { menuExpanded = true }) {
                         Icon(
                             imageVector = Icons.Default.Menu, // Default menu icon
                             contentDescription = "Menu"
+                        )
+                    }
+
+                    // Dropdown Menu
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Sign Out") },
+                            onClick = {
+                                menuExpanded = false // Close the menu
+                                FirebaseAuth.getInstance().signOut() // Sign out from Firebase
+                                onSignOut() // Navigate back to the SignInActivity
+                            }
                         )
                     }
                 }
