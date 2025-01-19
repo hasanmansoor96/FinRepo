@@ -1,6 +1,7 @@
 package com.example.bankaccount
 
 import UserViewModel
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -41,16 +42,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.navArgument
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Retain edge-to-edge
-        setContent {
-            BankAccountTheme {
-                BankAccountApp()
+
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            // User not signed in; redirect to SignInActivity
+            startActivity(Intent(this, SignInActivity::class.java))
+            finish()
+        } else {
+            // User is signed in; proceed with MainActivity
+            enableEdgeToEdge() // Retain edge-to-edge
+            setContent {
+                BankAccountTheme {
+                    BankAccountApp()
+                }
             }
         }
     }
